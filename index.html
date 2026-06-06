@@ -108,7 +108,7 @@ body::after {
 .hero-title .line:nth-child(2) span { animation-delay: 0.45s; }
 .hero-subtitle {
   font-family: var(--font-body); font-size: 1.4rem; font-style: italic;
-  color: rgba(255,255,255,0.8); margin-bottom: 48px;
+  color: #ffffff; font-weight: 700; margin-bottom: 48px;
   opacity: 0; transform: translateY(20px);
   animation: fadeUp 0.8s 0.7s forwards;
 }
@@ -192,9 +192,18 @@ body::after {
 #bakelser { padding: 100px 0; background: var(--dark); position: relative; overflow: hidden; }
 
 .bakelser-header { text-align: center; max-width: 700px; margin: 0 auto 64px; padding: 0 24px; }
-.bakelse-grid {
+.bakelse-track-wrap {
   max-width: 1300px; margin: 0 auto; padding: 0 48px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.bakelse-track-wrap::-webkit-scrollbar { display: none; }
+.bakelse-grid {
+  display: flex; gap: 28px; width: max-content;
+}
+.bakelse-card {
+  width: calc((min(1300px, 100vw) - 96px - 56px) / 3);
+  min-width: 260px;
 }
 .bakelse-card {
   background: var(--dark-2); border-radius: 4px;
@@ -458,6 +467,40 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
+/* ── BAKELSE CAROUSEL CONTROLS ── */
+.bakelse-carousel-wrap {
+  position: relative;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.bakelse-btn {
+  position: absolute;
+  top: 50%; transform: translateY(-60%);
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--white);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+.bakelse-btn:hover { background: var(--teal); border-color: var(--teal); transform: translateY(-60%) scale(1.08); }
+.bakelse-btn-prev { left: 4px; }
+.bakelse-btn-next { right: 4px; }
+.bakelse-dots {
+  display: flex; justify-content: center; gap: 8px;
+  margin-top: 24px;
+}
+.bakelse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: none; cursor: pointer; padding: 0;
+  transition: background 0.3s, transform 0.3s;
+}
+.bakelse-dot.active { background: var(--gold); transform: scale(1.35); }
+
 /* ── HAMBURGER ── */
 .hamburger {
   display: none;
@@ -542,19 +585,32 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
   .about-inner { grid-template-columns: 1fr; gap: 32px; padding: 60px 24px; }
   .about-img-col { display: none; }
   .about-text-col { padding: 0; }
-  .hours-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hours-inner { grid-template-columns: 1fr; gap: 32px; padding: 0 24px; }
+  .hours-image-side { height: 260px; width: 100vw; margin-left: -24px; border-radius: 0; }
+  .hours-img-big { border-radius: 0; }
   .contact-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-  .bakelse-grid { grid-template-columns: 1fr 1fr; }
   #navbar { padding: 0 24px; }
   .nav-links { display: none; }
   .hamburger { display: flex; }
   .mobile-menu { display: flex; }
-  .minigolf-header-row { grid-template-columns: 1fr; }
+  .minigolf-header-row { grid-template-columns: 1fr; padding: 0 24px; }
+  .carousel-wrap { padding: 0; max-width: 100%; }
+  .carousel { border-radius: 0; }
+  .carousel-slide { height: 260px; }
+  .carousel-btn-prev { left: 12px; }
+  .carousel-btn-next { right: 12px; }
+  .minigolf-pricing { padding: 0 24px; grid-template-columns: 1fr; max-width: 400px; margin-top: 32px; }
+  .bakelse-track-wrap { padding: 0 16px; }
+  .bakelse-grid { gap: 12px; }
+  .bakelse-card { width: calc(50vw - 28px); min-width: 140px; }
+  .bakelse-img-wrap { height: 130px; }
+  .bakelse-info { padding: 10px 12px 14px; }
+  .bakelse-info h3 { font-size: 0.9rem; }
   .hitta-layout { grid-template-columns: 1fr; }
-  .minigolf-pricing { grid-template-columns: 1fr; max-width: 400px; }
+  .map-wrap { width: 100vw; margin-left: -24px; border-radius: 0; height: 320px; }
 }
 @media (max-width: 600px) {
-  .bakelse-grid { grid-template-columns: 1fr; }
+  .hitta-inner { padding: 0 24px; }
 }
 </style>
 </head>
@@ -631,6 +687,14 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
   <div class="bakelser-header reveal">
     <h2 class="section-title" id="bakelser-title" style="color:var(--white)"></h2>
   </div>
+  <div class="bakelse-carousel-wrap">
+  <button class="bakelse-btn bakelse-btn-prev" id="bakelse-prev" aria-label="Föregående">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="bakelse-btn bakelse-btn-next" id="bakelse-next" aria-label="Nästa">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div class="bakelse-track-wrap" id="bakelse-track">
   <div class="bakelse-grid">
     <div class="bakelse-card reveal" style="transition-delay:0.05s">
       <div class="bakelse-img-wrap">
@@ -669,6 +733,9 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
       <div class="bakelse-info"><h3>Godis</h3></div>
     </div>
   </div>
+  </div>
+  <div class="bakelse-dots" id="bakelse-dots"></div>
+</div>
 </section>
 
 <!-- WAVE dark → cream -->
@@ -1007,7 +1074,50 @@ inner.addEventListener('touchend', e => {
   const diff = touchStartX - e.changedTouches[0].clientX;
   if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
 });
-// HAMBURGER MENU
+// BAKELSE CAROUSEL ARROWS + DOTS
+const bakelsTrack = document.getElementById('bakelse-track');
+const baksePrev   = document.getElementById('bakelse-prev');
+const bakseNext   = document.getElementById('bakelse-next');
+const bakseDots   = document.getElementById('bakelse-dots');
+
+if (bakelsTrack && baksePrev && bakseNext && bakseDots) {
+  // Determine scroll amount = one card width + gap
+  function bakseCardW() {
+    const card = bakelsTrack.querySelector('.bakelse-card');
+    return card ? card.offsetWidth + 28 : 300;
+  }
+
+  // Build dots based on number of cards
+  const bakseCards = bakelsTrack.querySelectorAll('.bakelse-card');
+  const visibleCount = () => Math.round(bakelsTrack.offsetWidth / bakseCardW());
+
+  function buildBakseDots() {
+    bakseDots.innerHTML = '';
+    const total = bakseCards.length;
+    const visible = visibleCount();
+    const steps = Math.max(1, total - visible + 1);
+    for (let i = 0; i < steps; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'bakelse-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => {
+        bakelsTrack.scrollTo({ left: i * bakseCardW(), behavior: 'smooth' });
+      });
+      bakseDots.appendChild(dot);
+    }
+  }
+  buildBakseDots();
+
+  function updateBakseDots() {
+    const dots = bakseDots.querySelectorAll('.bakelse-dot');
+    const idx = Math.round(bakelsTrack.scrollLeft / bakseCardW());
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  bakelsTrack.addEventListener('scroll', updateBakseDots, { passive: true });
+  baksePrev.addEventListener('click', () => bakelsTrack.scrollBy({ left: -bakseCardW(), behavior: 'smooth' }));
+  bakseNext.addEventListener('click', () => bakelsTrack.scrollBy({ left:  bakseCardW(), behavior: 'smooth' }));
+  window.addEventListener('resize', buildBakseDots);
+}
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobile-menu');
 
