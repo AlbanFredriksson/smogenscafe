@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smögens Café & Minigolf</title>
+<title>Smögens Minigolf & Café</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -48,7 +48,8 @@ body::after {
 #navbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   padding: 0 48px; height: 72px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; min-width: 0;
+  box-sizing: border-box; width: 100%;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 #navbar.scrolled {
@@ -99,7 +100,7 @@ body::after {
   line-height: 1; letter-spacing: -0.02em;
   margin-bottom: 24px;
 }
-.hero-title .line { display: block; overflow: hidden; }
+.hero-title .line { display: block; overflow: hidden; padding-bottom: 0.15em; margin-bottom: -0.15em; }
 .hero-title .line span {
   display: block; opacity: 0; transform: translateY(100%);
   animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -192,6 +193,7 @@ body::after {
 #bakelser { padding: 100px 0; background: var(--dark); position: relative; overflow: hidden; }
 
 .bakelser-header { text-align: center; max-width: 700px; margin: 0 auto 64px; padding: 0 24px; }
+
 .bakelse-track-wrap {
   max-width: 1300px; margin: 0 auto; padding: 0 48px;
   overflow-x: auto; overflow-y: hidden;
@@ -204,19 +206,13 @@ body::after {
 .bakelse-card {
   width: calc((min(1300px, 100vw) - 96px - 56px) / 3);
   min-width: 260px;
+  background: var(--dark-2); border-radius: 28px;
+  overflow: hidden; cursor: default;
 }
-.bakelse-card {
-  background: var(--dark-2); border-radius: 4px;
-  overflow: hidden; cursor: pointer;
-  transform-style: preserve-3d; transition: box-shadow 0.3s ease;
-}
-.bakelse-card:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
 .bakelse-img-wrap { overflow: hidden; height: 260px; }
 .bakelse-img-wrap img {
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
 }
-.bakelse-card:hover .bakelse-img-wrap img { transform: scale(1.08); }
 .bakelse-info { padding: 24px 28px 28px; }
 .bakelse-info h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--white); }
 
@@ -575,6 +571,10 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
 }
 .mobile-link:hover { color: var(--gold); }
 
+/* ── SCROLL SNAP för bakelse-karusell (touch) ── */
+.bakelse-track-wrap { scroll-snap-type: x mandatory; }
+.bakelse-card { scroll-snap-align: start; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1100px) {
   .about-text-col { padding: 80px 40px 60px 48px; }
@@ -582,35 +582,79 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
   .minigolf-header-row { padding: 0 48px; }
 }
 @media (max-width: 900px) {
-  .about-inner { grid-template-columns: 1fr; gap: 32px; padding: 60px 24px; }
-  .about-img-col { display: none; }
-  .about-text-col { padding: 0; }
-  .hours-inner { grid-template-columns: 1fr; gap: 32px; padding: 0 24px; }
-  .hours-image-side { height: 260px; width: 100vw; margin-left: -24px; border-radius: 0; }
-  .hours-img-big { border-radius: 0; }
-  .contact-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-  #navbar { padding: 0 24px; }
+  /* Section padding – minska 100px → 60px på alla mörka/ljusa sektioner */
+  #bakelser { padding: 60px 0; }
+  #oppettider { padding: 60px 0; }
+  #kontakt { padding: 60px 0; }
+  #hitta-hit { padding: 60px 0; }
+  #social { padding: 60px 0; }
+
+  /* Section titles – mer tyngd på mobil */
+  .section-title { font-size: clamp(1.8rem, 7vw, 3.8rem); }
+
+  /* About */
+  .about-inner { grid-template-columns: 1fr; gap: 0; padding: 0; }
+  .about-img-col {
+    display: block;
+    height: 220px;
+    overflow: hidden;
+  }
+  .about-img-col img {
+    height: 220px;
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .about-text-col { padding: 40px 24px; }
+
+  /* Navbar */
+  #navbar { padding: 0 20px; }
+  .nav-logo { font-size: 1.1rem; flex-shrink: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hamburger { flex-shrink: 0; margin-left: 12px; }
   .nav-links { display: none; }
   .hamburger { display: flex; }
   .mobile-menu { display: flex; }
+
+  /* Minigolf carousel */
   .minigolf-header-row { grid-template-columns: 1fr; padding: 0 24px; }
   .carousel-wrap { padding: 0; max-width: 100%; }
   .carousel { border-radius: 0; }
   .carousel-slide { height: 260px; }
   .carousel-btn-prev { left: 12px; }
   .carousel-btn-next { right: 12px; }
-  .minigolf-pricing { padding: 0 24px; grid-template-columns: 1fr; max-width: 400px; margin-top: 32px; }
-  .bakelse-track-wrap { padding: 0 16px; }
-  .bakelse-grid { gap: 12px; }
-  .bakelse-card { width: calc(50vw - 28px); min-width: 140px; }
-  .bakelse-img-wrap { height: 130px; }
-  .bakelse-info { padding: 10px 12px 14px; }
-  .bakelse-info h3 { font-size: 0.9rem; }
+
+  /* Pricing cards */
+  .minigolf-pricing { padding: 0 24px; grid-template-columns: 1fr; max-width: 400px; margin: 32px auto 0; }
+
+  /* Bakelse cards – ett synligt kort i taget, swipe-vänligt */
+  .bakelse-track-wrap { padding: 0 24px; }
+  .bakelse-grid { gap: 16px; }
+  .bakelse-card { width: 80vw; min-width: 240px; }
+  .bakelse-img-wrap { height: 200px; }
+  .bakelse-info { padding: 16px 20px 20px; }
+  .bakelse-info h3 { font-size: 1.1rem; }
+
+  /* Öppettider */
+  .hours-inner { grid-template-columns: 1fr; gap: 32px; padding: 0 24px; }
+  .hours-image-side { height: 260px; width: calc(100% + 48px); margin-left: -24px; border-radius: 0; }
+  .hours-img-big { border-radius: 0; }
+
+  /* Kontakt */
+  .contact-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+
+  /* Hitta hit */
   .hitta-layout { grid-template-columns: 1fr; }
-  .map-wrap { width: 100vw; margin-left: -24px; border-radius: 0; height: 320px; }
-}
-@media (max-width: 600px) {
   .hitta-inner { padding: 0 24px; }
+  .map-wrap { width: calc(100% + 48px); margin-left: -24px; border-radius: 0; height: 320px; }
+}
+
+@media (max-width: 600px) {
+  /* Hero CTA – wrap knappar på smal skärm */
+  .hero-cta { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .btn-primary, .btn-secondary { padding: 14px 24px; width: 100%; text-align: center; }
+
+  /* Footer – stapla på liten skärm */
+  .footer-bottom { flex-direction: column; text-align: center; gap: 8px; padding: 0 24px; }
 }
 </style>
 </head>
@@ -618,7 +662,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
 
 <!-- NAVBAR -->
 <nav id="navbar">
-  <a href="#" class="nav-logo">Smögens <span>Café</span></a>
+  <a href="#" class="nav-logo">Smögens <span>Minigolf &amp; Café</span></a>
   <ul class="nav-links">
     <li><a href="#about">Om oss</a></li>
     <li><a href="#bakelser">Café</a></li>
@@ -648,9 +692,9 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
   <div class="hero-content">
     <h1 class="hero-title">
       <span class="line"><span>Smögens</span></span>
-      <span class="line"><span>Café &amp; Minigolf</span></span>
+      <span class="line"><span>Minigolf &amp; Café</span></span>
     </h1>
-    <p class="hero-subtitle">Hembakade bakelser, havsbris &amp; 18 minigolfbanor vid havet</p>
+    <p class="hero-subtitle">Hembakade bakelser, havsbris &amp; 13 minigolfbanor vid havet</p>
     <div class="hero-cta">
       <a href="#hitta-hit" class="btn-primary"><span>Hitta hit</span></a>
       <a href="#oppettider" class="btn-secondary">Öppettider</a>
@@ -664,7 +708,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
     <!-- Text left -->
     <div class="about-text-col reveal-left">
       <h2 class="section-title">En plats för<br>minnen vid havet</h2>
-      <p class="about-desc">Mitt i pittoreska Smögen erbjuder vi nybakade smörgåsar, läckra bakelser och mycket mer i en trivsam miljö. Kombinera gärna fikastunden med en runda på våra 18 unika minigolfbanor – en upplevelse för hela familjen. Välkommen att stanna kvar och njuta en stund!</p>
+      <p class="about-desc">Mitt i pittoreska Smögen erbjuder vi nybakade smörgåsar, läckra bakelser och mycket mer i en trivsam miljö. Kombinera gärna fikastunden med en runda på våra 13 unika minigolfbanor – en upplevelse för hela familjen. Välkommen att stanna kvar och njuta en stund!</p>
     </div>
 
     <!-- Image right -->
@@ -709,9 +753,9 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
     </div>
     <div class="bakelse-card reveal" style="transition-delay:0.15s">
       <div class="bakelse-img-wrap">
-        <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&q=80" alt="Mjukglass" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&q=80" alt="Kulglass" loading="lazy">
       </div>
-      <div class="bakelse-info"><h3>Mjukglass</h3></div>
+      <div class="bakelse-info"><h3>Kulglass</h3></div>
     </div>
     <div class="bakelse-card reveal" style="transition-delay:0.05s">
       <div class="bakelse-img-wrap">
@@ -748,7 +792,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
 <section id="minigolf">
   <div class="minigolf-header-row">
     <div class="minigolf-title-block reveal-left">
-      <h2 class="section-title">18 Unika Minigolfbanor</h2>
+      <h2 class="section-title">13 Unika Minigolfbanor</h2>
       <p class="minigolf-desc">Varje bana är designad för att ge maximal glädje — från enkla hål för de yngsta till knepiga kurvor för utmanaren.</p>
     </div>
   </div>
@@ -788,7 +832,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
       <div class="price-badge">🧑</div>
       <div class="price-info">
         <span>Vuxen (13+ år)</span>
-        <div class="price-amount">120 kr <small>/ person</small></div>
+        <div class="price-amount">100 kr <small>/ person</small></div>
       </div>
     </div>
     <div class="price-card">
@@ -881,7 +925,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
     <div class="hitta-layout">
       <!-- Text & details -->
       <div class="reveal-left">
-        <h3>Smögens Café &amp; Minigolf</h3>
+        <h3>Smögens Minigolf &amp; Café</h3>
         <p style="margin-top: 32px; margin-bottom: 40px;">Cafét och minigolfbanan hittar du alldeles intill Smögenbryggan — Bohusläns längsta trägångbro. Parkera vid Smögen centrum och promenera längs bryggan, så hittar du oss på höger sida.</p>
 
         <div class="hitta-detail">
@@ -920,7 +964,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2138.8263398!2d11.2263!3d58.3545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x464574b7a2e6c6c3%3A0x8b3f70a4b54f3ff5!2zU23DtmdlbiwgU3ZlcmlnZQ!5e0!3m2!1ssv!2sse!4v1700000000000!5m2!1ssv!2sse"
           allowfullscreen="" loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
-          title="Karta till Smögens Café & Minigolf">
+          title="Karta till Smögens Minigolf & Café">
         </iframe>
       </div>
     </div>
@@ -948,7 +992,7 @@ footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px; paddin
   </div>
   <footer>
     <div class="footer-bottom">
-      <span>© 2024 Smögens Café &amp; Minigolf · Alla rättigheter förbehållna</span>
+      <span>© 2024 Smögens Minigolf &amp; Café · Alla rättigheter förbehållna</span>
       <span>Smögenbryggan 12, 456 51 Smögen</span>
     </div>
   </footer>
