@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoxGroove – Modern Svensk Fox i Uddevalla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════ */
+:root {
+  --bg:       #faf7f2;
+  --bg-warm:  #f3ede4;
+  --bg-deep:  #ebe3d6;
+  --card:     #ffffff;
+  --dark:     #1c1714;
+  --text:     #4a3f36;
+  --text-lt:  #8a7e73;
+  --gold:     #C4622D;
+  --gold-dk:  #A34E22;
+  --gold-lt:  #D98050;
+  --gold-bg:  rgba(196,98,45,0.08);
+  --border:   rgba(0,0,0,0.07);
+  --shadow-s: 0 2px 8px rgba(28,23,20,0.04);
+  --shadow-m: 0 8px 32px rgba(28,23,20,0.07);
+  --shadow-l: 0 16px 48px rgba(28,23,20,0.10);
+  --radius:   14px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-io:  cubic-bezier(0.77, 0, 0.175, 1);
+  --font-d:   'Cormorant Garamond', Georgia, serif;
+  --font-b:   'Outfit', system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   RESET + BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; }
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 0.07s; }
+.reveal-d2 { transition-delay: 0.14s; }
+.reveal-d3 { transition-delay: 0.21s; }
+.reveal-d4 { transition-delay: 0.28s; }
+.reveal-d5 { transition-delay: 0.35s; }
+.reveal-d6 { transition-delay: 0.42s; }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 0 clamp(1.5rem, 4vw, 4rem);
+  transition: background 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+.nav.scrolled {
+  background: rgba(250,247,242,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 var(--border);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+}
+.nav-logo {
+  font-family: var(--font-d);
+  font-size: 1.65rem; font-weight: 700; letter-spacing: 0.02em;
+  color: #fff;
+  transition: color 0.35s var(--ease-out);
+}
+.nav.scrolled .nav-logo { color: var(--dark); }
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 2.2rem; list-style: none; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.85); text-transform: uppercase;
+  position: relative; transition: color 0.2s;
+}
+.nav.scrolled .nav-links a { color: var(--text-lt); }
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1.5px; background: var(--gold);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.3s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover { color: #fff; }
+  .nav.scrolled .nav-links a:hover { color: var(--dark); }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+}
+.nav-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--gold); color: #fff;
+  padding: 0.55rem 1.4rem; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-cta:hover { background: var(--gold-dk); transform: translateY(-1px); }
+}
+.nav-cta:active { transform: scale(0.97); }
+
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+.hamburger svg { width: 24px; height: 24px; stroke: #fff; transition: stroke 0.35s var(--ease-out); }
+.nav.scrolled .hamburger svg { stroke: var(--dark); }
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+
+  background-image: url("hero.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.hero-noise {
+  position: absolute; inset: 0; z-index: 1;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.35) 100%);
+}
+.hero-content {
+  position: relative; z-index: 3;
+  max-width: 720px;
+  padding: 8rem 2rem 5rem;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.45rem 1.1rem; border-radius: 100px;
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #fff;
+  margin-bottom: 2rem;
+  animation: heroFade 0.8s var(--ease-out) both;
+}
+.hero-badge svg { width: 14px; height: 14px; }
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(3.4rem, 8vw, 6.5rem);
+  font-weight: 700; line-height: 1.02;
+  color: #fff;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-text {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: rgba(255,255,255,0.95); max-width: 540px; margin: 0 auto 2.8rem;
+  line-height: 1.75;
+  animation: heroFade 0.8s 0.16s var(--ease-out) both;
+}
+.hero-buttons {
+  display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap;
+  animation: heroFade 0.8s 0.24s var(--ease-out) both;
+}
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem; border-radius: 10px;
+  font-family: var(--font-b); font-size: 0.9rem; font-weight: 500;
+  letter-spacing: 0.02em; cursor: pointer; border: none;
+  transition: transform 0.15s var(--ease-out), box-shadow 0.2s, background 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-gold { background: var(--gold); color: #fff; box-shadow: 0 4px 16px rgba(196,98,45,0.25); }
+.btn-outline {
+  background: rgba(255,255,255,0.7); color: var(--dark);
+  border: 1.5px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-gold:hover { background: var(--gold-dk); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(196,98,45,0.3); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+}
+.btn svg { width: 16px; height: 16px; }
+
+/* scroll cue */
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%); z-index: 3;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+  animation: heroFade 0.8s 0.5s var(--ease-out) both;
+}
+.scroll-line {
+  width: 1px; height: 36px; background: var(--gold);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
+  50%      { opacity: 1;   transform: scaleY(1); }
+}
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════ */
+.section {
+  padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 4vw, 4rem);
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: clamp(2.5rem, 4vw, 4rem); }
+.section-label {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+}
+.section-label::before, .section-label::after {
+  content: ''; width: 24px; height: 1px; background: var(--gold); opacity: 0.4;
+}
+.section-title {
+  font-family: var(--font-d);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 600; color: var(--dark); line-height: 1.15;
+  margin-bottom: 1.2rem;
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.section-intro {
+  font-size: 1.05rem; color: var(--text-lt);
+  max-width: 560px; margin: 0 auto; line-height: 1.75;
+}
+
+/* ═══════════════════════════════════════════
+   DANSBAND CARDS
+   ═══════════════════════════════════════════ */
+.band-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+.band-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.band-card-img {
+  width: 100%; height: 200px;
+  object-fit: cover; display: block;
+}
+.band-card-body {
+  padding: 1.8rem 2rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .band-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-m);
+  }
+  .band-card:hover .band-accent { transform: scaleX(1); }
+}
+.band-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+.band-date {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.7rem;
+}
+.band-name {
+  font-family: var(--font-d);
+  font-size: 1.75rem; font-weight: 600; color: var(--dark);
+  margin-bottom: 0.35rem;
+}
+.band-venue { font-size: 0.82rem; color: var(--text-lt); }
+
+/* ═══════════════════════════════════════════
+   EVENTS SECTION
+   ═══════════════════════════════════════════ */
+.events-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+.event-list { display: flex; flex-direction: column; gap: 0.9rem; }
+.event-item {
+  display: flex; align-items: center; gap: 1.2rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem 1.6rem;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .event-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-s);
+    border-color: rgba(196,98,45,0.25);
+  }
+}
+.event-item-date {
+  font-family: var(--font-d); font-weight: 700;
+  font-size: 1.5rem; color: var(--gold);
+  min-width: 3.2rem; text-align: center; line-height: 1.2;
+}
+.event-item-date small { font-size: 0.65rem; font-weight: 500; display: block; color: var(--text-lt); text-transform: uppercase; letter-spacing: 0.08em; }
+.event-item-info { flex: 1; }
+.event-item-title { font-weight: 500; color: var(--dark); font-size: 0.92rem; margin-bottom: 0.15rem; }
+.event-item-sub { font-size: 0.8rem; color: var(--text-lt); }
+
+.schedule-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-s);
+}
+.schedule-head {
+  background: var(--gold-bg);
+  padding: 1.2rem 1.6rem;
+  font-family: var(--font-d); font-size: 1.15rem; font-weight: 600;
+  color: var(--dark); border-bottom: 1px solid var(--border);
+}
+.schedule-row {
+  display: flex; gap: 1rem; padding: 1.1rem 1.6rem;
+  border-bottom: 1px solid var(--border); align-items: flex-start;
+}
+.schedule-row:last-child { border-bottom: none; }
+.sch-time {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--gold); min-width: 95px; padding-top: 0.15rem; white-space: nowrap;
+}
+.sch-text { font-size: 0.88rem; color: var(--text); line-height: 1.6; }
+.sch-text strong { color: var(--dark); font-weight: 500; display: block; margin-bottom: 0.1rem; }
+
+.entry-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--gold-bg); color: var(--gold-dk);
+  padding: 0.5rem 1rem; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 500;
+  margin-top: 1.2rem;
+}
+
+/* ═══════════════════════════════════════════
+   COURSES
+   ═══════════════════════════════════════════ */
+.courses-bg { background: var(--bg-warm); }
+.courses-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; align-items: stretch;
+}
+.course-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: clamp(1.8rem, 3vw, 2.8rem);
+  display: flex; flex-direction: column;
+  box-shadow: var(--shadow-s);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .course-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-m); }
+}
+.course-tag {
+  display: inline-block; width: fit-content;
+  background: var(--gold-bg); color: var(--gold-dk);
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.35rem 0.85rem; border-radius: 6px; margin-bottom: 1.4rem;
+}
+.course-card h3 {
+  font-family: var(--font-d);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem); font-weight: 600;
+  color: var(--dark); margin-bottom: 0.9rem; line-height: 1.25;
+}
+.course-card .desc { font-size: 0.9rem; color: var(--text-lt); margin-bottom: 1.5rem; line-height: 1.7; }
+.course-details { display: flex; flex-direction: column; gap: 0.7rem; margin-top: auto; }
+.cd-row {
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  font-size: 0.85rem; color: var(--text);
+}
+.cd-row svg { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; margin-top: 0.1rem; }
+.course-price {
+  display: flex; align-items: baseline; gap: 0.5rem;
+  margin-top: 1.6rem; padding-top: 1.4rem;
+  border-top: 1px solid var(--border);
+}
+.price-big {
+  font-family: var(--font-d); font-size: 2.4rem; font-weight: 700; color: var(--gold);
+}
+.price-note { font-size: 0.82rem; color: var(--text-lt); }
+
+/* ═══════════════════════════════════════════
+   PRIVATE LESSONS
+   ═══════════════════════════════════════════ */
+.private-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem); align-items: center;
+}
+.private-text h2 { text-align: left; }
+.private-text p { font-size: 1.05rem; color: var(--text-lt); line-height: 1.8; margin-bottom: 2rem; max-width: 460px; }
+.private-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 3rem; text-align: center;
+  box-shadow: var(--shadow-m); position: relative; overflow: hidden;
+}
+.private-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+}
+.private-price {
+  font-family: var(--font-d); font-size: 4.5rem; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.private-price-unit { font-size: 0.85rem; color: var(--text-lt); margin-top: 0.3rem; display: block; }
+.private-label { font-size: 0.92rem; color: var(--text); margin: 1.5rem 0 0.5rem; }
+.private-contact { font-size: 0.85rem; color: var(--text-lt); margin-top: 1rem; }
+.private-contact strong { color: var(--gold); font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   VENUE / INFO STRIP
+   ═══════════════════════════════════════════ */
+.venue-strip {
+  background: var(--dark); color: rgba(255,255,255,0.7);
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 4rem);
+}
+.venue-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+}
+.venue-item-label {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold-lt); margin-bottom: 0.45rem;
+}
+.venue-item-value { font-size: 0.95rem; color: rgba(255,255,255,0.85); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════
+   CONTACT
+   ═══════════════════════════════════════════ */
+#kontakt { background: var(--bg); }
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.contact-card-icon {
+  width: 40px; height: 40px;
+  background: var(--gold-bg);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+.contact-card-icon svg { width: 20px; height: 20px; }
+.contact-card-label {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--gold);
+}
+.contact-card-value {
+  font-size: 1.1rem; font-weight: 600; color: var(--dark);
+}
+.contact-card-value a {
+  color: inherit;
+  transition: color 0.2s;
+}
+.contact-card-value a:hover { color: var(--gold); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+footer {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 2.5rem clamp(1.5rem, 4vw, 4rem);
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-logo {
+  font-family: var(--font-d); font-size: 1.3rem; font-weight: 700;
+  color: rgba(255,255,255,0.8);
+}
+.footer-logo span { color: var(--gold-lt); }
+.footer-meta { font-size: 0.78rem; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
+.footer-right { font-size: 0.82rem; color: rgba(255,255,255,0.45); text-align: right; line-height: 1.9; }
+
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: block; }
+  .events-layout,
+  .courses-grid,
+  .private-layout {
+    grid-template-columns: 1fr;
+  }
+  .section-header { text-align: left; }
+  .section-label { justify-content: flex-start; }
+  .section-label::before { display: none; }
+  .section-intro { margin: 0; }
+  .hero-content { padding: 7rem 1.5rem 5rem; }
+  .hero h1 { font-size: clamp(3.2rem, 14vw, 5rem); }
+  .footer-right { text-align: left; }
+}
+
+@media (max-width: 480px) {
+  .hero-buttons { flex-direction: column; width: 100%; }
+  .hero-buttons .btn { width: 100%; justify-content: center; }
+  .band-grid { grid-template-columns: 1fr; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: opacity 0.3s; transform: none; }
+  .scroll-line { animation: none; opacity: 0.5; }
+  @keyframes heroFade { from { opacity: 0; } to { opacity: 1; } }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Fox<span>Groove</span></a>
+    <ul class="nav-links">
+      <li><a href="#dansband">Dansband</a></li>
+      <li><a href="#dansevent">Dansevent</a></li>
+      <li><a href="#kurser">Kurser</a></li>
+      <li><a href="#privatlektion">Privatlektion</a></li>
+    </ul>
+    <a href="#kontakt" class="nav-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Kontakta oss
+    </a>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('show')" aria-label="Meny">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Folkets Hus · Uddevalla
+    </div>
+    <h1>Fox<em>Groove</em></h1>
+    <p class="hero-text">Vi erbjuder kurser för alla nivåer, danskvällar, privatlektioner och livekvällar med populära dansband. Oavsett om du är nybörjare eller erfaren dansare finns något för dig.</p>
+    <div class="hero-buttons">
+      <a href="#dansevent" class="btn btn-gold">
+        Kommande event
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+      </a>
+      <a href="#kurser" class="btn btn-outline">Kursinformation</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VENUE STRIP ═══ -->
+<div class="venue-strip">
+  <div class="venue-grid">
+    <div>
+      <div class="venue-item-label">Plats</div>
+      <div class="venue-item-value">Folkets Hus, Uddevalla</div>
+    </div>
+    <div>
+      <div class="venue-item-label">Dansgolv</div>
+      <div class="venue-item-value">Stort golv med intilliggande servering</div>
+    </div>
+    <div>
+      <div class="venue-item-label">Parkering</div>
+      <div class="venue-item-value">Gratis parkering vid badhuset</div>
+    </div>
+    <div>
+      <div class="venue-item-label">Anmälan &amp; bokning</div>
+      <div class="venue-item-value">SMS: 0723-618930</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DANSBAND ═══ -->
+<section class="section" id="dansband">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Säsongen 2026</div>
+      <h2 class="section-title">Bokade <em>dansband</em></h2>
+      <p class="section-intro">Upplev levande dansmusik med några av Sveriges bästa dansband under 2026. Här hittar du alla våra bokade danskvällar.</p>
+    </div>
+    <div class="band-grid">
+      <div class="band-card reveal reveal-d2">
+        <div class="band-accent"></div>
+        <img src="highlights.jpg" alt="Highlights" class="band-card-img">
+        <div class="band-card-body">
+          <div class="band-date">16 oktober 2026</div>
+          <div class="band-name">Highlights</div>
+          <div class="band-venue">Folkets Hus, Uddevalla</div>
+        </div>
+      </div>
+      <div class="band-card reveal reveal-d3">
+        <div class="band-accent"></div>
+        <img src="callinaz.jpg" alt="Callinaz" class="band-card-img">
+        <div class="band-card-body">
+          <div class="band-date">20 november 2026</div>
+          <div class="band-name">Callinaz</div>
+          <div class="band-venue">Folkets Hus, Uddevalla</div>
+        </div>
+      </div>
+      <div class="band-card reveal reveal-d4">
+        <div class="band-accent"></div>
+        <img src="phs.jpg" alt="PH:s" class="band-card-img">
+        <div class="band-card-body">
+          <div class="band-date">27 november 2026</div>
+          <div class="band-name">PH:s</div>
+          <div class="band-venue">Folkets Hus, Uddevalla</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DANSEVENT ═══ -->
+<section class="section courses-bg" id="dansevent">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Lördagskvällar</div>
+      <h2 class="section-title">Kommande <em>dansevent</em></h2>
+      <p class="section-intro">Lördagskvällar på Folkets Hus i Uddevalla. Välkommen oavsett om du vill träna, lära dig något nytt eller bara njuta av en härlig kväll på dansgolvet.</p>
+    </div>
+    <div class="events-layout">
+      <div class="event-list">
+        <div class="event-item reveal reveal-d1">
+          <div class="event-item-date">26<small>sep</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="event-item reveal reveal-d2">
+          <div class="event-item-date">10<small>okt</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="event-item reveal reveal-d3">
+          <div class="event-item-date">24<small>okt</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="event-item reveal reveal-d4">
+          <div class="event-item-date">7<small>nov</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="event-item reveal reveal-d5">
+          <div class="event-item-date">12<small>dec</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="event-item reveal reveal-d6">
+          <div class="event-item-date">19<small>dec</small></div>
+          <div class="event-item-info">
+            <div class="event-item-title">Grundkurs kl. 17.00–18.30</div>
+            <div class="event-item-sub">Foxkväll kl. 20.00–23.00</div>
+          </div>
+        </div>
+        <div class="entry-badge reveal">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Ingen föranmälan · Inträde 150 kr
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="schedule-card">
+          <div class="schedule-head">Kvällens schema</div>
+          <div class="schedule-row">
+            <span class="sch-time">17.00–18.30</span>
+            <div class="sch-text">
+              <strong>Grundkurs i modern svensk fox</strong>
+              Nybörjare och erfarna välkomna. Hållning, förning, följning, steg och variationer. 15 min paus.
+            </div>
+          </div>
+          <div class="schedule-row">
+            <span class="sch-time">19.00–20.00</span>
+            <div class="sch-text">
+              <strong>Fortsättningskurs</strong>
+              Turer, stegvariationer, tempoväxlingar, musikanpassning och textanpassning.
+            </div>
+          </div>
+          <div class="schedule-row">
+            <span class="sch-time">20.00–23.00</span>
+            <div class="sch-text">
+              <strong>Foxkväll – fri dans</strong>
+              Dansa hela kvällen i en avslappnad stämning. Inga krav – bara glädje.
+            </div>
+          </div>
+          <div class="schedule-row">
+            <span class="sch-time">21.00</span>
+            <div class="sch-text">
+              <strong>Gemensam fika</strong>
+              Vi sänker volymen och fikar tillsammans. Smörgåsar, kaka, kaffe och te finns till försäljning.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ KURSER ═══ -->
+<section class="section" id="kurser">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Lär dig dansa</div>
+      <h2 class="section-title">Våra <em>kurser</em></h2>
+      <p class="section-intro">Oavsett om du aldrig dansat förut eller vill ta din teknik till nästa nivå har vi en kurs för dig.</p>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card reveal reveal-d1">
+        <span class="course-tag">Nybörjare &amp; alla nivåer</span>
+        <h3>Grundkurs i modern svensk fox</h3>
+        <p class="desc">Kursen riktar sig till nybörjare och som repetition till erfarna dansare – samt till alla som bara vill ha kul. Vi börjar med hållning, förning och följning, sedan steg och variationer. Vi bygger på med teknik, känsla och musikanpassning.</p>
+        <div class="course-details">
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span>Kl. 17.00–18.30 · 1,5 h med 15 min paus</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Sex tillfällen under hösten</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Folkets Hus, Uddevalla</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Anmäl dig via SMS till 0723-618930 – ange om du dansar som förare eller följare</span>
+          </div>
+        </div>
+        <div class="course-price">
+          <span class="price-big">750 kr</span>
+          <span class="price-note">per deltagare · sex tillfällen</span>
+        </div>
+      </div>
+
+      <div class="course-card reveal reveal-d2">
+        <span class="course-tag">Vidarekommande</span>
+        <h3>Fortsättningskurs i modern svensk fox</h3>
+        <p class="desc">För dig som vill ta din dans till nästa nivå. Vi arbetar med turer, stegvariationer, tempoväxlingar, musikanpassning och textanpassning – och fördjupar oss i känslan i dansen.</p>
+        <div class="course-details">
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span>Kl. 19.00–20.00</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Samma lördagar som grundkursen</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Folkets Hus, Uddevalla</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Ingen föranmälan krävs</span>
+          </div>
+        </div>
+        <div class="course-price">
+          <span class="price-big">150 kr</span>
+          <span class="price-note">inträde per kväll · gäller hela kvällen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRIVATLEKTION ═══ -->
+<section class="section courses-bg" id="privatlektion">
+  <div class="container">
+    <div class="private-layout">
+      <div class="private-text reveal">
+        <div class="section-label">Personlig träning</div>
+        <h2 class="section-title">Privat<em>lektioner</em></h2>
+        <p>Vill du utvecklas snabbare eller få personlig vägledning? Vi erbjuder privatlektioner anpassade efter dina mål och din nivå – oavsett om du är nybörjare eller erfaren dansare.</p>
+        <a href="sms:0723618930" class="btn btn-gold">
+          Boka privatlektion
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+        </a>
+      </div>
+      <div class="private-card reveal reveal-d2">
+        <span class="private-price">300 kr</span>
+        <span class="private-price-unit">per privatlektion</span>
+        <p class="private-label">Anpassad helt efter dina mål och din nivå.</p>
+        <p class="private-contact">Kontakta oss via SMS för att boka:<br><strong>0723-618930</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<section id="kontakt" class="section">
+  <div class="section-header reveal">
+    <div class="section-label">
+      <span>Kontakt</span>
+    </div>
+    <h2 class="section-title">Hör av dig</h2>
+    <p class="section-intro">Vi svarar på SMS och mail – välj det som passar dig bäst.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-card reveal reveal-d1">
+      <div class="contact-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.6 19.79 19.79 0 01.03 3.12 2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+      </div>
+      <div class="contact-card-label">Telefon / SMS</div>
+      <div class="contact-card-value"><a href="sms:0723618930">0723-618930</a></div>
+    </div>
+    <div class="contact-card reveal reveal-d2">
+      <div class="contact-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="contact-card-label">E-post</div>
+      <div class="contact-card-value"><a href="mailto:info@smogensminigolf.se">info@smogensminigolf.se</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Fox<span>Groove</span></div>
+      <div class="footer-meta">Modern Svensk Fox · Uddevalla</div>
+    </div>
+    <div class="footer-right">
+      Folkets Hus, Uddevalla<br>
+      SMS &amp; bokning: 0723-618930<br>
+      <span style="opacity:0.5">© 2025 FoxGroove</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ JS ═══ -->
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+// Scroll reveal with IntersectionObserver
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// Hide past dates
+(function() {
+  const svMonths = {
+    januari:1,februari:2,mars:3,april:4,maj:5,juni:6,
+    juli:7,augusti:8,september:9,oktober:10,november:11,december:12,
+    jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,aug:8,sep:9,okt:10,nov:11,dec:12
+  };
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  document.querySelectorAll('.band-card').forEach(card => {
+    const txt = card.querySelector('.band-date')?.textContent.trim().toLowerCase() || '';
+    const m = txt.match(/(\d+)\s+(\S+)\s+(\d{4})/);
+    if (m) {
+      const d = new Date(+m[3], (svMonths[m[2]] || 1) - 1, +m[1]);
+      if (d < today) card.style.display = 'none';
+    }
+  });
+
+  document.querySelectorAll('.event-item').forEach(item => {
+    const dateEl = item.querySelector('.event-item-date');
+    if (!dateEl) return;
+    const day = parseInt(dateEl.childNodes[0]?.textContent || '0', 10);
+    const mon = dateEl.querySelector('small')?.textContent.trim().toLowerCase() || '';
+    const month = svMonths[mon];
+    if (day && month) {
+      const d = new Date(2026, month - 1, day);
+      if (d < today) item.style.display = 'none';
+    }
+  });
+})();
+
+// Mobile menu toggle
+const style = document.createElement('style');
+style.textContent = `.nav-links.show{display:flex!important;position:absolute;top:72px;left:0;right:0;flex-direction:column;background:rgba(250,247,242,0.97);backdrop-filter:blur(16px);padding:1.5rem 2rem;gap:1.2rem;border-bottom:1px solid var(--border);box-shadow:var(--shadow-m);} .nav-links.show a{color:var(--text-lt)!important;}`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
