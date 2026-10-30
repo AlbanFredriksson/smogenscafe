@@ -380,8 +380,9 @@ a { text-decoration: none; }
    ═══════════════════════════════════════════ */
 .courses-bg { background: var(--bg-warm); }
 .courses-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: 1fr;
   gap: 1.5rem; align-items: stretch;
+  max-width: 640px; margin: 0 auto;
 }
 .course-card {
   background: var(--card); border: 1px solid var(--border);
@@ -673,12 +674,12 @@ footer {
   <div class="container">
     <div class="section-header reveal">
       <div class="section-label">Lär dig dansa</div>
-      <h2 class="section-title">Våra <em>kurser</em></h2>
-      <p class="section-intro">Oavsett om du aldrig dansat förut eller vill ta din teknik till nästa nivå har vi en kurs för dig.</p>
+      <h2 class="section-title">Vår <em>kurs</em></h2>
+      <p class="section-intro">Lär dig modern svensk fox i en välkomnande miljö – vi tar hand om dig oavsett erfarenhet.</p>
     </div>
     <div class="courses-grid">
       <div class="course-card reveal reveal-d1">
-        <span class="course-tag">Nybörjare &amp; alla nivåer</span>
+        <span class="course-tag">Lördagar</span>
         <h3>Grundkurs i modern svensk fox</h3>
         <p class="desc">Kursen riktar sig till nybörjare och som repetition till erfarna dansare – samt till alla som bara vill ha kul. Vi börjar med hållning, förning och följning, sedan steg och variationer. Vi bygger på med teknik, känsla och musikanpassning.</p>
         <div class="course-details">
