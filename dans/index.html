@@ -380,9 +380,8 @@ a { text-decoration: none; }
    ═══════════════════════════════════════════ */
 .courses-bg { background: var(--bg-warm); }
 .courses-grid {
-  display: grid; grid-template-columns: 1fr;
+  display: grid; grid-template-columns: 1fr 1fr;
   gap: 1.5rem; align-items: stretch;
-  max-width: 640px; margin: 0 auto;
 }
 .course-card {
   background: var(--card); border: 1px solid var(--border);
@@ -674,7 +673,7 @@ footer {
   <div class="container">
     <div class="section-header reveal">
       <div class="section-label">Lär dig dansa</div>
-      <h2 class="section-title">Vår <em>kurs</em></h2>
+      <h2 class="section-title">Våra <em>kurser</em></h2>
       <p class="section-intro">Lär dig modern svensk fox i en välkomnande miljö – vi tar hand om dig oavsett erfarenhet.</p>
     </div>
     <div class="courses-grid">
@@ -706,29 +705,32 @@ footer {
         </div>
       </div>
 
-    </div>
-
-    <div class="reveal" style="margin-top:2.5rem;">
-      <div class="section-label" style="margin-bottom:1rem;">Så här ser kvällen ut</div>
-      <div class="schedule-card">
-        <div class="schedule-head">Kvällens schema</div>
-        <div class="schedule-row">
-          <span class="sch-time">17.00–18.30</span>
-          <div class="sch-text">
-            <strong>Grundkurs i modern svensk fox</strong>
-            Nybörjare och erfarna välkomna. Hållning, förning, följning, steg och variationer. 15 min paus.
+      <div class="course-card reveal reveal-d2">
+        <span class="course-tag">Drop-in</span>
+        <h3>Workshop i modern svensk fox</h3>
+        <p class="desc">Vi går igenom en tur, ett steg eller någon variation och övar i rotation så att alla får dansa med olika partners. Ingen föranmälan krävs. Efter workshopen är det fri dans till 23.00.</p>
+        <div class="course-details">
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span>Kl. 19.00–20.00 · fri dans 20.00–23.00</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>12 dec &nbsp;·&nbsp; 19 dec</span>
+          </div>
+          <div class="cd-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Folkets Hus, Uddevalla</span>
           </div>
         </div>
-        <div class="schedule-row">
-          <span class="sch-time">19.00–23.00</span>
-          <div class="sch-text">
-            <strong>Foxkväll – fri dans</strong>
-            Dansa hela kvällen i en avslappnad stämning. Inga krav – bara glädje. 100 kr inträde.
-          </div>
+        <div class="course-price">
+          <span class="price-big">150 kr</span>
+          <span class="price-note">inträde · gäller hela kvällen</span>
         </div>
-
       </div>
+
     </div>
+
   </div>
 </section>
 
